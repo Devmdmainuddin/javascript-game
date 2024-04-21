@@ -39,7 +39,7 @@ P1L1Button.addEventListener('click',function(){
         console.log(p1l1Input.value)
         player1L1.style.display = "none"
         player1L2.style.display = "flex"
-        p1Name.innerHTML = p1l1Input.value
+        p1Name.innerHTML =`player 1 name is : ${p1l1Input.value}` 
     }else{
         p1l1Error.innerHTML = "Enter your name plz"
 
@@ -66,7 +66,7 @@ P2L1Button.addEventListener('click',function(){
         console.log(p2l1Input.value)
         player2L1.style.display = "none"
         player2L2.style.display = "flex"
-        p2Name.innerHTML = p2l1Input.value
+        p2Name.innerHTML =`player 2 name is : ${p2l1Input.value}` 
     }else{
         p2l1Error.innerHTML = "Enter your name plz"
     }
@@ -85,7 +85,8 @@ P2L2Button.addEventListener('click',function(){
         winnerName.innerHTML =`winner is  ${p2l1Input.value}`
     }else{
         count--
-        remainingcount.innerHTML = count
+        remainingcount.innerHTML =`remaining guess : ${count} time` 
+        p2l2Error.innerHTML = "you input a wrong number pleass try again"
         p2l2Input.value = ""
 
     }
