@@ -44,7 +44,7 @@ P1L1Button.addEventListener('click',function(){
         p1l1Error.innerHTML = "Enter your name plz"
 
     }
-    p1l1Input.value = ""
+    // p1l1Input.value = ""
 })
 
 P1L2Button.addEventListener('click',function(){
@@ -90,7 +90,7 @@ P2L2Button.addEventListener('click',function(){
 
     }
 
-    if(count <0){
+    if(count <1){
         player2L2.style.display = "none"
         result.style.display = "flex"
         winnerName.innerHTML =`winner is ${p1l1Input.value}`
