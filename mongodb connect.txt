@@ -1,0 +1,237 @@
+
+
+
+backend database
+..............................................
+mkdir project_name
+cd project_name
+npm init -y
+code .
+	package.json---	"start":"node index.js",
+npm i express cors mongodb dotenv
+
+file create ---	index.js
+		.gitignore -- node_modules
+			     .env
+
+		.env  ---- DB_NAME="coffishop"
+			   DB_PASS="0zX2h1jO0kCXMYKN"
+
+git init
+
+
+const express = require('express')
+var cors = require('cors')
+require('dotenv').config();
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const app = express()
+const port = process.env.PORT || 3000
+
+app.use(cors())
+app.use(express.json())
+
+
+const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@cluster0.jgwprpb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+.......................................................
+
+const usercollection = client.db("usersDB").collection("users");
+
+............................. get database post ................................
+        app.get('/users', async (req, res) => {
+            const carsor = usercollection.find()
+            const result = await carsor.toArray();
+            res.send(result);
+        })
+.............................. post details  ......................................
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await usercollection.findOne(query)
+            res.send(result);
+        })
+.............................. create database post   ........................................
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            console.log('new user', user);
+            const result = await usercollection.insertOne(user);
+            res.send(result);
+        });
+..................................... update  database post ..........................................
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const users = req.body;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updateuser = {
+                $set: {
+                    name: users.name,
+                    email: users.email
+                }
+            };
+            const result = await usercollection.updateOne(filter, updateuser, options);
+            console.log(users)
+            res.send(result);
+        })
+............................................ delete database post....................................................
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await usercollection.deleteOne(query)
+            res.send(result);
+            console.log('delete', id)
+        })
+
+......................................................................................................
+
+					claine
+
+....................................................... post load    ...................................................
+
+{
+        path: "/user",
+        element: <User></User>,
+        loader:()=>fetch('http://localhost:2000/users')
+},
+........................................
+const loderUser = useLoaderData();
+
+ {
+   users.map(user => <p key={user._id}>{user.name} : {user.email} <Link to={`/update/${user._id}`}><button>update</button></Link> <button onClick={() => handledelete(user._id)}> delete</button></p>)
+  }
+...................................................... post detailes ....................................................................
+{
+   path: '/propertie/:id',
+   element: <ProDetails></ProDetails>,
+   loader:({params})=>fetch(`http://localhost:4000/propertie/${params.id}`)
+
+},
+
+const propertie = useLoaderData();
+
+<div>
+            <h1>propertie details</h1>
+            <h3>{propertie.category}</h3>
+            <h2>{propertie.title}</h2>
+            <img src={propertie.image} alt="" />
+          
+</div>
+................................................... create post  and add to database......................................................
+
+
+
+  const handlesubmit = event => {
+
+        event.preventDefault();
+        const form = event.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const user = { name, email }
+
+        fetch('http://localhost:2000/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log('inside post', data)
+                if (data.insertedId) {
+                    alert('users added successfully')
+                    // const newUser = [...users, data]
+                    // setusers(newUser)
+                    form.reset();
+                }
+            })
+        console.log(name, email)
+    }
+
+
+
+<form action="" onSubmit={handlesubmit}>
+    <input type="text" name="name" id="" placeholder='type you name' />
+    <br />
+    <input type="email" name="email" id="" placeholder='type you name' />
+    <br />
+    <input type="submit" value="send data sarver" />
+</form>
+
+..........................................................delete post .......................................................
+
+const loderUser = useLoaderData();
+const [users, setusers] = useState(loderUser);
+
+
+
+    const handledelete = _id => {
+        fetch(`http://localhost:2000/users/${_id}`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data.deletedCount > 0) {
+                    alert('deleted successfully');
+                    const remaining = users.filter(user => user._id !== _id);
+                    setusers(remaining);
+                }
+            })
+
+    }
+
+.................................................  post update .......................................................
+{
+        path: "/update/:id",
+        element: <Update></Update>,
+        loader:({params})=>fetch(`http://localhost:2000/users/${params.id}`)
+      },
+
+const loderUser = useLoaderData();
+
+const handleupdate = event =>{
+
+    event.preventDefault();
+        const form = event.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const updateuser = { name, email }
+        console.log(updateuser)
+        fetch(`http://localhost:2000/users/${loderUser._id}`, {
+            method: 'PUT',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(updateuser)
+        })
+        .then(res =>res.json())
+        .then(data => {
+            console.log(data)
+            // if(data.upsertedCount.length > 0){
+            //     alert("account ar update")
+            //     form.reset();
+            // }
+            
+        })
+
+}
+
+......................................
+<form action="" onSubmit={handleupdate}>
+    <input type="text" name="name" id="" defaultValue={loderUser.name} />
+    <br />
+    <input type="email" name="email" id="" defaultValue={loderUser.email} />
+    <br />
+    <input type="submit" value="send data sarver" />
+</form>
+
+
+.........................................................................................................
+
+
+
+
+
+
+
+
